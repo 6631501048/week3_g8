@@ -225,6 +225,6 @@ Future<void> deleteExpense(int userId) async {
 
 //================= Fea 6 =================
 void exitApp() {
-  print("---------- Bye ----------");
+  print("---------- Bye -----------");
   exit(0);
 }	
