@@ -214,6 +214,7 @@ Future<void> deleteExpense(int userId) async {
   final url = Uri.parse('http://localhost:3000/expenses/$userId/$idInput');
   final response = await http.delete(url);
 
+//================= Fea 5+6 =================
   if (response.statusCode == 200) {
     print("✅ Expense deleted successfully.");
   } else if (response.statusCode == 404) {
