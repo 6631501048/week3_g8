@@ -85,7 +85,8 @@ Future<void> showmenu(int userId) async {
     print("1.all expenses");
     print("2.Today's expenses");
     print("3.Search expenses");
-    print("");
+    print("4.Add new expense");
+    print("5.Delete an expense");
     print("6. Exit");
     stdout.write("Choose... ");
     choice = stdin.readLineSync();
