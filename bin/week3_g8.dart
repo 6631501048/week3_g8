@@ -94,13 +94,12 @@ Future<void> showmenu(int userId) async {
       await showAllExpenses(userId);
     } else if (choice == "2") {
       await showTodayExpenses(userId);
-
-    } else if (choice == "4"){
-      await addExpense(userId);
-
     } else if (choice == "3") {
       await searchExpenses(userId);
-
+      }else if (choice == "4"){
+      await addExpense(userId);
+      }else if (choice == "5") {
+      await deleteExpense(userId);
     } else if (choice != "6") {
       print("Invalid choice");
     }
@@ -203,9 +202,31 @@ Future<void> addExpense(int userId) async {
     print("Error: ${response.body}");
   }
 }
-
 //================= Fea 5 =================
+Future<void> deleteExpense(int userId) async {
+  print("==== Delete Expense ====");
+  stdout.write("Enter Expense ID to delete: ");
+  String? idInput = stdin.readLineSync();
+  if (idInput == null || idInput.isEmpty) {
+    print("Invalid ID.");
+    return;
+  }
 
-//================= Fea 6 =================
+  final url = Uri.parse('http://localhost:3000/expenses/$userId/$idInput');
+  final response = await http.delete(url);
 
 //================= Fea 5+6 =================
+  if (response.statusCode == 200) {
+    print("✅ Expense deleted successfully.");
+  } else if (response.statusCode == 404) {
+    print("⚠️ Expense not found.");
+  } else {
+    print("❌ Error deleting expense: ${response.body}");
+  }
+}
+
+//================= Fea 6 =================
+void exitApp() {
+  print("---------- Bye -----------");
+  exit(0);
+}	
