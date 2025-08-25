@@ -164,7 +164,7 @@ Future<void> searchExpenses(int userId) async {
     if (expenses.isEmpty) {
       print("No item '$keyword'.");
     } else {
-      print("------ Search Results ------");
+      print("------ Search Results -----");
       for (var exp in expenses) {
         print(" ${exp['id']}. ${exp['items']} : ${exp['paid']}฿ :${exp['date']}");
       }
