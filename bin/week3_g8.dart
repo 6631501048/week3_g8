@@ -95,11 +95,20 @@ Future<void> showmenu(int userId) async {
     } else if (choice == "2") {
       await showTodayExpenses(userId);
 
+    } else if (choice == "3") {
+      await searchExpenses(userId);
+      }else if (choice == "4"){
+      await addExpense(userId);
+      }else if (choice == "5") {
+      await deleteExpense(userId);
+
+
     } else if (choice == "4"){
       await addExpense(userId);
 
     } else if (choice == "3") {
       await searchExpenses(userId);
+
 
     } else if (choice != "6") {
       print("Invalid choice");
@@ -130,6 +139,28 @@ Future<void> showAllExpenses(int userId) async {
   }
 }
 
+Future<void> showTodayExpenses(int userId) async {
+  final url = Uri.parse('http://localhost:3000/expenses/today/$userId');
+  final response = await http.get(url);
+  if (response.statusCode == 200) {
+    final List expenses = jsonDecode(response.body);
+    if (expenses.isEmpty) {
+      print("Notthing for today");
+    } else {
+      print("------------ Today's Expenses ------------");
+      int total = 0;
+      for (var exp in expenses) {
+        print(
+          " ${exp['id']}. ${exp['items']} : ${exp['paid']}฿ :${exp['date']}",
+        );
+        total += (exp['paid'] as num).toInt();
+      }
+      print("Total expenses: ${total}฿ ");
+    }
+  } else {
+    print("Error fetching today's expenses: ${response.body}");
+  }
+}
 
 Future<void> showAllExpenses(int userId) async {
   final url = Uri.parse('http://localhost:3000/expenses/$userId');
@@ -179,7 +210,7 @@ Future<void> showTodayExpenses(int userId) async {
 
 //================= Fea 3 =================
 
-=======
+
 Future<void> searchExpenses(int userId) async {
   stdout.write("Item to search: ");
   String? keyword = stdin.readLineSync()?.trim();
@@ -221,6 +252,7 @@ Future<void> addExpense(int userId) async {
   final url = Uri.parse('http://localhost:3000/expenses/add');
   final response = await http.post(url, body: body);
 
+
   if (response.statusCode == 200) {
     print("Expense added successfully!");
   } else {
@@ -228,8 +260,38 @@ Future<void> addExpense(int userId) async {
   }
 }
 
+
+  if (response.statusCode == 200) {
+    print("Expense added successfully!");
+  } else {
+    print("Error: ${response.body}");
+  }
+}
 //================= Fea 5 =================
+Future<void> deleteExpense(int userId) async {
+  print("==== Delete Expense ====");
+  stdout.write("Enter Expense ID to delete: ");
+  String? idInput = stdin.readLineSync();
+  if (idInput == null || idInput.isEmpty) {
+    print("Invalid ID.");
+    return;
+  }
+
+  final url = Uri.parse('http://localhost:3000/expenses/$userId/$idInput');
+  final response = await http.delete(url);
+
+  if (response.statusCode == 200) {
+    print("✅ Expense deleted successfully.");
+  } else if (response.statusCode == 404) {
+    print("⚠️ Expense not found.");
+  } else {
+    print("❌ Error deleting expense: ${response.body}");
+  }
+}
 
 //================= Fea 6 =================
+void exitApp() {
+  print("---------- Bye ----------");
+  exit(0); //off program
+}	
 
-//================= Fea 5+6 =================
