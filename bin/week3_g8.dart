@@ -5,50 +5,9 @@ import 'dart:io';
 import 'dart:convert';
 //============================================================
 
-
 //================= Fea 1+2 =================
 void main() async {
-  int key = 1;
-  while (key == 1) {
-    print("--Account--");
-    print("1. Login");
-    print("2. Registration");
-    stdout.write("Choose the number: ");
-    String? service = stdin.readLineSync();
-    if (service == '1') {
-      await login();
-      key = 0;
-    } else if (service == '2') {
-      await register();
-    } else {
-      print("please select the number");
-    }
-  }
-  print("---------- Bye ----------");
-}
-
-Future<void> register() async {
-  print("==== Registration ====");
-  stdout.write("Username: ");
-  String? username = stdin.readLineSync()?.trim();
-  stdout.write("Password: ");
-  String? password = stdin.readLineSync()?.trim();
-  if (username == null || password == null) {
-    print("Incomplete input");
-    return;
-  }
-  final body = {"username": username, "password": password};
-  final url = Uri.parse('http://localhost:3000/register');
-  final response = await http.post(url, body: body);
-  if (response.statusCode == 200) {
-    final result = response.body;
-    print(result);
-  } else if (response.statusCode == 401 || response.statusCode == 500) {
-    final result = response.body;
-    print(result);
-  } else {
-    print("Unknown error");
-  }
+  await login();
 }
 
 Future<void> login() async {
@@ -86,7 +45,7 @@ Future<void> showmenu(int userId) async {
     print("2.Today's expenses");
     print("3.Search expenses");
     print("4.Add new expense");
-    print("5.Delete an expense");
+    print("5.Delete anexpense");
     print("6. Exit");
     stdout.write("Choose... ");
     choice = stdin.readLineSync();
@@ -94,9 +53,13 @@ Future<void> showmenu(int userId) async {
       await showAllExpenses(userId);
     } else if (choice == "2") {
       await showTodayExpenses(userId);
-    } else if (choice == "3") {
-      await searchExpenses(userId);
-    } else if (choice != "6") {
+    } else if (choice == "4") {
+      await addExpense(userId);
+    } else if (choice == "5") {
+      await deleteExpense(userId);
+    } else if (choice == "6") {
+      exitApp(); 
+    } else {
       print("Invalid choice");
     }
   } while (choice != "6");
@@ -150,16 +113,30 @@ Future<void> showTodayExpenses(int userId) async {
 
 //================= Fea 3 =================
 
-Future<void> searchExpenses(int userId) async {
-  stdout.write("Item to search: ");
-  String? keyword = stdin.readLineSync()?.trim();
-  if (keyword == null || keyword.isEmpty) {
-    print("No keyword entered.");
+//================= Fea 4 =================
+Future<void> addExpense(int userId) async {
+  print("====== Add new item ======");
+  stdout.write("Item: ");
+  String? item = stdin.readLineSync()?.trim();
+  stdout.write("Paid : ");
+  String? paidStr = stdin.readLineSync()?.trim();
+  int? paid = int.tryParse(paidStr ?? "");
+
+  if (item == null || item.isEmpty || paid == null) {
+    print("Invalid input.");
     return;
   }
-  final url = Uri.parse('http://localhost:3000/expenses/search/$userId?keyword=$keyword');
-  final response = await http.get(url);
+
+  final body = {
+    "items": item,
+    "paid": paid.toString(),
+    "userId": userId.toString(),
+  };
+  final url = Uri.parse('http://localhost:3000/expenses/add');
+  final response = await http.post(url, body: body);
+
   if (response.statusCode == 200) {
+
     final List expenses = jsonDecode(response.body);
     if (expenses.isEmpty) {
       print("No item '$keyword'.");
@@ -169,15 +146,38 @@ Future<void> searchExpenses(int userId) async {
         print(" ${exp['id']}. ${exp['items']} : ${exp['paid']}฿ :${exp['date']}");
       }
     }
+
+    print("Inserted!");
   } else {
-    print("Error searching expenses: ${response.body}");
+    print("Error: ${response.body}");
   }
 }
 
-//================= Fea 4 =================
-
 //================= Fea 5 =================
+Future<void> deleteExpense(int userId) async {
+  print("==== Delete Expense ====");
+  stdout.write("Enter Expense ID to delete: ");
+  String? idInput = stdin.readLineSync();
+  if (idInput == null || idInput.isEmpty) {
+    print("Invalid ID.");
+    return;
+  }
+
+  final url = Uri.parse('http://localhost:3000/expenses/$userId/$idInput');
+  final response = await http.delete(url);
+
+  //================= Fea 5+6 =================
+  if (response.statusCode == 200) {
+    print("✅ Expense deleted successfully.");
+  } else if (response.statusCode == 404) {
+    print("⚠️ Expense not found.");
+  } else {
+    print("❌ Error deleting expense: ${response.body}");
+  }
+}
 
 //================= Fea 6 =================
-
-//================= Fea 5+6 =================
+void exitApp() {
+  print("---------- Bye -----------");
+  exit(0);
+}
