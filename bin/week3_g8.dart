@@ -5,11 +5,11 @@ import 'dart:io';
 import 'dart:convert';
 //============================================================
 
-
 //================= Fea 1+2 =================
 void main() async {
   await login();
 }
+
 Future<void> login() async {
   print("===== Login =====");
   // Get username and password
@@ -53,17 +53,13 @@ Future<void> showmenu(int userId) async {
       await showAllExpenses(userId);
     } else if (choice == "2") {
       await showTodayExpenses(userId);
-
-    } else if (choice != "3") {
-
-    } else if (choice == "3") {
-      await searchExpenses(userId);
-      }else if (choice == "4"){
+    } else if (choice == "4") {
       await addExpense(userId);
-      }else if (choice == "5") {
+    } else if (choice == "5") {
       await deleteExpense(userId);
-    } else if (choice != "6") {
-
+    } else if (choice == "6") {
+      exitApp(); 
+    } else {
       print("Invalid choice");
     }
   } while (choice != "6");
@@ -117,7 +113,6 @@ Future<void> showTodayExpenses(int userId) async {
 
 //================= Fea 3 =================
 
-
 //================= Fea 4 =================
 Future<void> addExpense(int userId) async {
   print("====== Add new item ======");
@@ -132,7 +127,11 @@ Future<void> addExpense(int userId) async {
     return;
   }
 
-  final body = {"items": item, "paid": paid.toString(), "userId": userId.toString()};
+  final body = {
+    "items": item,
+    "paid": paid.toString(),
+    "userId": userId.toString(),
+  };
   final url = Uri.parse('http://localhost:3000/expenses/add');
   final response = await http.post(url, body: body);
 
@@ -142,6 +141,7 @@ Future<void> addExpense(int userId) async {
     print("Error: ${response.body}");
   }
 }
+
 //================= Fea 5 =================
 Future<void> deleteExpense(int userId) async {
   print("==== Delete Expense ====");
@@ -155,7 +155,7 @@ Future<void> deleteExpense(int userId) async {
   final url = Uri.parse('http://localhost:3000/expenses/$userId/$idInput');
   final response = await http.delete(url);
 
-//================= Fea 5+6 =================
+  //================= Fea 5+6 =================
   if (response.statusCode == 200) {
     print("✅ Expense deleted successfully.");
   } else if (response.statusCode == 404) {
@@ -169,4 +169,4 @@ Future<void> deleteExpense(int userId) async {
 void exitApp() {
   print("---------- Bye -----------");
   exit(0);
-}	
+}
