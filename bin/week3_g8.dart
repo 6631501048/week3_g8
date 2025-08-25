@@ -94,13 +94,42 @@ Future<void> showmenu(int userId) async {
       await showAllExpenses(userId);
     } else if (choice == "2") {
       await showTodayExpenses(userId);
+
     } else if (choice == "4"){
       await addExpense(userId);
+
+    } else if (choice == "3") {
+      await searchExpenses(userId);
+
     } else if (choice != "6") {
       print("Invalid choice");
     }
   } while (choice != "6");
 }
+
+Future<void> showAllExpenses(int userId) async {
+  final url = Uri.parse('http://localhost:3000/expenses/$userId');
+  final response = await http.get(url);
+  if (response.statusCode == 200) {
+    final List expenses = jsonDecode(response.body);
+    if (expenses.isEmpty) {
+      print("Notthing bruhh");
+    } else {
+      int total = 0;
+      print("------------ All Expenses ------------");
+      for (var exp in expenses) {
+        print(
+          " ${exp['id']}. ${exp['items']} : ${exp['paid']}฿ :${exp['date']}",
+        );
+        total += (exp['paid'] as num).toInt();
+      }
+      print("Total expense: ${total}฿ ");
+    }
+  } else {
+    print("Error fetching expenses: ${response.body}");
+  }
+}
+
 
 Future<void> showAllExpenses(int userId) async {
   final url = Uri.parse('http://localhost:3000/expenses/$userId');
@@ -150,6 +179,30 @@ Future<void> showTodayExpenses(int userId) async {
 
 //================= Fea 3 =================
 
+=======
+Future<void> searchExpenses(int userId) async {
+  stdout.write("Item to search: ");
+  String? keyword = stdin.readLineSync()?.trim();
+  if (keyword == null || keyword.isEmpty) {
+    print("No keyword entered.");
+    return;
+  }
+  final url = Uri.parse('http://localhost:3000/expenses/search/$userId?keyword=$keyword');
+  final response = await http.get(url);
+  if (response.statusCode == 200) {
+    final List expenses = jsonDecode(response.body);
+    if (expenses.isEmpty) {
+      print("No item '$keyword'.");
+    } else {
+      print("------ Search Results ------");
+      for (var exp in expenses) {
+        print(" ${exp['id']}. ${exp['items']} : ${exp['paid']}฿ :${exp['date']}");
+      }
+    }
+  } else {
+    print("Error searching expenses: ${response.body}");
+  }
+}
 
 //================= Fea 4 =================
 Future<void> addExpense(int userId) async {
@@ -178,3 +231,5 @@ Future<void> addExpense(int userId) async {
 //================= Fea 5 =================
 
 //================= Fea 6 =================
+
+//================= Fea 5+6 =================
