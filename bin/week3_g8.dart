@@ -180,9 +180,10 @@ Future<void> searchExpenses(int userId) async {
 
 //================= Fea 4 =================
 Future<void> addExpense(int userId) async {
+  print("====== Add new item ======");
   stdout.write("Item: ");
   String? item = stdin.readLineSync()?.trim();
-  stdout.write("Paid amount: ");
+  stdout.write("Paid : ");
   String? paidStr = stdin.readLineSync()?.trim();
   int? paid = int.tryParse(paidStr ?? "");
 
@@ -196,7 +197,7 @@ Future<void> addExpense(int userId) async {
   final response = await http.post(url, body: body);
 
   if (response.statusCode == 200) {
-    print("Expense added successfully!");
+    print("Inserted!");
   } else {
     print("Error: ${response.body}");
   }
