@@ -1,5 +1,17 @@
 import 'package:week3_g8/week3_g8.dart' as week3_g8;
+import 'package:http/http.dart' as http;
+import 'dart:io';
 
-void main(List<String> arguments) {
-  print('Hello world: ${week3_g8.calculate()}!');
-}
+import 'dart:convert';
+//============================================================
+
+//================= Fea 1+2 =================
+
+
+//================= Fea 3 =================
+
+//================= Fea 4 =================
+
+//================= Fea 5 =================
+
+//================= Fea 6 =================
