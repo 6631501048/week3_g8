@@ -136,6 +136,17 @@ Future<void> addExpense(int userId) async {
   final response = await http.post(url, body: body);
 
   if (response.statusCode == 200) {
+
+    final List expenses = jsonDecode(response.body);
+    if (expenses.isEmpty) {
+      print("No item '$keyword'.");
+    } else {
+      print("------ Search Results -----");
+      for (var exp in expenses) {
+        print(" ${exp['id']}. ${exp['items']} : ${exp['paid']}฿ :${exp['date']}");
+      }
+    }
+
     print("Inserted!");
   } else {
     print("Error: ${response.body}");
