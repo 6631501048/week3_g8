@@ -52,13 +52,11 @@ Future<void> showmenu(int userId) async {
     if (choice == "1") {
       await showAllExpenses(userId);
     } else if (choice == "2") {
-      await showTodayExpenses(userId);   
-    } else if (choice == "3") {
-      await showSearchexpenses(userId);
-    } else if (choice != "6") {
+      await showTodayExpenses(userId);
+    } else if (choice != "3") {
       print("Invalid choice");
     }
-  } while (choice != "3");
+  } while (choice != "6");
 }
 
 Future<void> showAllExpenses(int userId) async {
@@ -108,31 +106,12 @@ Future<void> showTodayExpenses(int userId) async {
 }
 
 //================= Fea 3 =================
-Future<void> showSearchexpenses(int userId) async {
-  final url = Uri.parse('http://localhost:3000/expenses/today/$userId');
-  final response = await http.get(url);
-  if (response.statusCode == 200) {
-    final List expenses = jsonDecode(response.body);
-    if (expenses.isEmpty) {
-      print("Item to seach: ");
-    } else {
-      print("------------ Item to search ------------");
-      int total = 0;
-      for (var exp in expenses) {
-        print(
-          " ${exp['id']}. ${exp['items']} : ${exp['paid']}฿ :${exp['date']}",
-        );
-        total += (exp['paid'] as num).toInt();
-      }
-      print("Total expenses: ${total}฿ ");
-    }
-  } else {
-    print("Error fetching today's expenses: ${response.body}");
-  }
-}
+
 
 //================= Fea 4 =================
 
 //================= Fea 5 =================
 
 //================= Fea 6 =================
+
+//================= Fea 5+6 =================
