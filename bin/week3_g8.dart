@@ -81,9 +81,11 @@ Future<void> showmenu(int userId) async {
   String? choice;
   do {
     print("======= Expense tracking app =======");
-    print("1. Show all");
-    print("2. Today's expense");
-    print("3. Exit");
+    print("1.all expenses");
+    print("2.Today's expenses");
+    print("3.Search expenses");
+    print("");
+    print("6. Exit");
     stdout.write("Choose... ");
     choice = stdin.readLineSync();
     if (choice == "1") {
