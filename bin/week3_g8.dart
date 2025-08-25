@@ -94,22 +94,12 @@ Future<void> showmenu(int userId) async {
       await showAllExpenses(userId);
     } else if (choice == "2") {
       await showTodayExpenses(userId);
-
     } else if (choice == "3") {
       await searchExpenses(userId);
       }else if (choice == "4"){
       await addExpense(userId);
       }else if (choice == "5") {
       await deleteExpense(userId);
-
-
-    } else if (choice == "4"){
-      await addExpense(userId);
-
-    } else if (choice == "3") {
-      await searchExpenses(userId);
-
-
     } else if (choice != "6") {
       print("Invalid choice");
     }
@@ -162,54 +152,7 @@ Future<void> showTodayExpenses(int userId) async {
   }
 }
 
-Future<void> showAllExpenses(int userId) async {
-  final url = Uri.parse('http://localhost:3000/expenses/$userId');
-  final response = await http.get(url);
-  if (response.statusCode == 200) {
-    final List expenses = jsonDecode(response.body);
-    if (expenses.isEmpty) {
-      print("Notthing bruhh");
-    } else {
-      int total = 0;
-      print("------------ All Expenses ------------");
-      for (var exp in expenses) {
-        print(
-          " ${exp['id']}. ${exp['items']} : ${exp['paid']}฿ :${exp['date']}",
-        );
-        total += (exp['paid'] as num).toInt();
-      }
-      print("Total expense: ${total}฿ ");
-    }
-  } else {
-    print("Error fetching expenses: ${response.body}");
-  }
-}
-
-Future<void> showTodayExpenses(int userId) async {
-  final url = Uri.parse('http://localhost:3000/expenses/today/$userId');
-  final response = await http.get(url);
-  if (response.statusCode == 200) {
-    final List expenses = jsonDecode(response.body);
-    if (expenses.isEmpty) {
-      print("Notthing for today");
-    } else {
-      print("------------ Today's Expenses ------------");
-      int total = 0;
-      for (var exp in expenses) {
-        print(
-          " ${exp['id']}. ${exp['items']} : ${exp['paid']}฿ :${exp['date']}",
-        );
-        total += (exp['paid'] as num).toInt();
-      }
-      print("Total expenses: ${total}฿ ");
-    }
-  } else {
-    print("Error fetching today's expenses: ${response.body}");
-  }
-}
-
 //================= Fea 3 =================
-
 
 Future<void> searchExpenses(int userId) async {
   stdout.write("Item to search: ");
@@ -252,15 +195,6 @@ Future<void> addExpense(int userId) async {
   final url = Uri.parse('http://localhost:3000/expenses/add');
   final response = await http.post(url, body: body);
 
-
-  if (response.statusCode == 200) {
-    print("Expense added successfully!");
-  } else {
-    print("Error: ${response.body}");
-  }
-}
-
-
   if (response.statusCode == 200) {
     print("Expense added successfully!");
   } else {
@@ -294,4 +228,3 @@ void exitApp() {
   print("---------- Bye ----------");
   exit(0);
 }	
-
