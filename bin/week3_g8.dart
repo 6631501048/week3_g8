@@ -130,30 +130,6 @@ Future<void> showAllExpenses(int userId) async {
   }
 }
 
-
-Future<void> showAllExpenses(int userId) async {
-  final url = Uri.parse('http://localhost:3000/expenses/$userId');
-  final response = await http.get(url);
-  if (response.statusCode == 200) {
-    final List expenses = jsonDecode(response.body);
-    if (expenses.isEmpty) {
-      print("Notthing bruhh");
-    } else {
-      int total = 0;
-      print("------------ All Expenses ------------");
-      for (var exp in expenses) {
-        print(
-          " ${exp['id']}. ${exp['items']} : ${exp['paid']}฿ :${exp['date']}",
-        );
-        total += (exp['paid'] as num).toInt();
-      }
-      print("Total expense: ${total}฿ ");
-    }
-  } else {
-    print("Error fetching expenses: ${response.body}");
-  }
-}
-
 Future<void> showTodayExpenses(int userId) async {
   final url = Uri.parse('http://localhost:3000/expenses/today/$userId');
   final response = await http.get(url);
@@ -179,7 +155,6 @@ Future<void> showTodayExpenses(int userId) async {
 
 //================= Fea 3 =================
 
-=======
 Future<void> searchExpenses(int userId) async {
   stdout.write("Item to search: ");
   String? keyword = stdin.readLineSync()?.trim();
