@@ -6,7 +6,24 @@ import 'dart:convert';
 //============================================================
 
 //================= Fea 1+2 ===============
+void main() async {
+  var url = Uri.parse('https://jsonplaceholder.typicode.com/posts');
+  var response = await http.get(url);
+  var jsonData = jsonDecode(response.body);
 
+  // Print all titles
+  for (var post in jsonData) {
+    print('Title: ${post['title']}');
+  }
+
+  // Print body of post with id=10
+  var postId10 = jsonData.firstWhere((post) => post['id'] == 10, orElse: () => null);
+  if (postId10 != null) {
+    print('\nBody of post with id=10:\n${postId10['body']}');
+  } else {
+    print('Post with id=10 not found.');
+  }
+}
 //================= Fea 3 =================
 
 //================= Fea 4 =================
