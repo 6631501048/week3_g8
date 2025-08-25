@@ -8,49 +8,8 @@ import 'dart:convert';
 
 //================= Fea 1+2 =================
 void main() async {
-  int key = 1;
-  while (key == 1) {
-    print("--Account--");
-    print("1. Login");
-    print("2. Registration");
-    stdout.write("Choose the number: ");
-    String? service = stdin.readLineSync();
-    if (service == '1') {
-      await login();
-      key = 0;
-    } else if (service == '2') {
-      await register();
-    } else {
-      print("please select the number");
-    }
-  }
-  print("---------- Bye ----------");
+  await login();
 }
-
-Future<void> register() async {
-  print("==== Registration ====");
-  stdout.write("Username: ");
-  String? username = stdin.readLineSync()?.trim();
-  stdout.write("Password: ");
-  String? password = stdin.readLineSync()?.trim();
-  if (username == null || password == null) {
-    print("Incomplete input");
-    return;
-  }
-  final body = {"username": username, "password": password};
-  final url = Uri.parse('http://localhost:3000/register');
-  final response = await http.post(url, body: body);
-  if (response.statusCode == 200) {
-    final result = response.body;
-    print(result);
-  } else if (response.statusCode == 401 || response.statusCode == 500) {
-    final result = response.body;
-    print(result);
-  } else {
-    print("Unknown error");
-  }
-}
-
 Future<void> login() async {
   print("===== Login =====");
   // Get username and password
@@ -86,15 +45,17 @@ Future<void> showmenu(int userId) async {
     print("2.Today's expenses");
     print("3.Search expenses");
     print("4.Add new expense");
-    print("5.Delete an expense");
+    print("5.Delete anexpense");
     print("6. Exit");
     stdout.write("Choose... ");
     choice = stdin.readLineSync();
     if (choice == "1") {
       await showAllExpenses(userId);
     } else if (choice == "2") {
-      await showTodayExpenses(userId);
-    } else if (choice != "3") {
+      await showTodayExpenses(userId);   
+    } else if (choice == "3") {
+      await showSearchexpenses(userId);
+    } else if (choice != "6") {
       print("Invalid choice");
     }
   } while (choice != "3");
@@ -147,7 +108,28 @@ Future<void> showTodayExpenses(int userId) async {
 }
 
 //================= Fea 3 =================
-
+Future<void> showSearchexpenses(int userId) async {
+  final url = Uri.parse('http://localhost:3000/expenses/today/$userId');
+  final response = await http.get(url);
+  if (response.statusCode == 200) {
+    final List expenses = jsonDecode(response.body);
+    if (expenses.isEmpty) {
+      print("Item to seach: ");
+    } else {
+      print("------------ Item to search ------------");
+      int total = 0;
+      for (var exp in expenses) {
+        print(
+          " ${exp['id']}. ${exp['items']} : ${exp['paid']}฿ :${exp['date']}",
+        );
+        total += (exp['paid'] as num).toInt();
+      }
+      print("Total expenses: ${total}฿ ");
+    }
+  } else {
+    print("Error fetching today's expenses: ${response.body}");
+  }
+}
 
 //================= Fea 4 =================
 
